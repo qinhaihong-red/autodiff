@@ -15,6 +15,9 @@ class Tensor:
         else:
             self.grad = numpy.zeros(self.data.shape) if isinstance(self.data, numpy.ndarray) else 0
 
+    def __str__(self):
+        return "{}".format(self.data)
+
     def __add__(self, other):
         # 先判断other是否是常数，然后再调用
         return add.forward([self, other]) if isinstance(other, Tensor) else add_with_const.forward([self, other])

@@ -305,3 +305,35 @@ def test_mean():
     assert np.array_equal(y.data, np.mean(x1_val))
     y.backward()
     assert np.array_equal(x.grad, np.ones(x1_val.shape) / 4)
+
+
+if __name__=='__main__':
+    x1_val = 1 * np.ones(3)
+    x2_val = 2 * np.ones(3)
+    x3_val = 3 * np.ones(3)
+    x4_val = 4 * np.ones(3)
+    x1 = Tensor(x1_val)
+    x2 = Tensor(x2_val)
+    x3 = Tensor(x3_val)
+    x4 = Tensor(x4_val)
+    y = x1 + x2 * x3 * x4 #x2与x3结合，生成1个临时变量t1；t1与x4结合，生成临时变量t2.
+    print(y.from_tensors)
+    print(y.from_tensors[0])#对应x1
+    print(y.from_tensors[1])#对应t2
+
+    print(y.from_tensors[1].from_tensors[0])#对应t1
+
+
+    print(y.from_tensors[1].from_tensors[1])#对应x4
+
+
+    print(y.from_tensors[1].from_tensors[0].from_tensors[0])#对应x2
+    print(y.from_tensors[1].from_tensors[0].from_tensors[1])#对应x3
+
+
+    # assert np.array_equal(y.data, x1_val + x2_val * x3_val * x4_val)
+    # y.backward()
+    # assert np.array_equal(x1.grad, np.ones_like(x1_val))
+    # assert np.array_equal(x2.grad, x3_val * x4_val)
+    # assert np.array_equal(x3.grad, x2_val * x4_val)
+    # assert np.array_equal(x4.grad, x2_val * x3_val)
