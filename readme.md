@@ -18,7 +18,7 @@ git上有不少自动微分的实现，如[autograd](https://github.com/HIPS/aut
 class Tensor:
     def __init__(self, data, from_tensors=None, op=None, grad=None):
         self.data = data  # 数据
-        self.from_tensors = from_tensors  # 是从什么Tensor得到的，保存计算图的历史
+        self.from_tensors = from_tensors  # 是从什么Tensors[列表]得到的，保存计算图的历史
         self.op = op  # 操作符运算
         # 梯度
         if grad:
@@ -31,10 +31,10 @@ class Tensor:
         return add.forward([self, other]) if isinstance(other, Tensor) else add_with_const.forward([self, other])
 
     def backward(self, grad=None):
-        # 判断y的梯度是否存在，如果不存在初始化和y.data一样类型的1的数据
+        # 判断y的梯度是否存在，如果不存在，则初始化为和y.data一样类型的值为1的数据
         if grad is None:
             self.grad = grad = numpy.ones(self.data.shape) if isinstance(self.data, numpy.ndarray) else 1
-        # 如果op不存在，则说明该Tensor为根节点，其from_tensors也必然不存在，否则计算梯度
+        # 如果op不存在，则说明该Tensor为根节点，其from_tensors也必然不存在，否则，计算梯度
         if self.op:
             grad = self.op.backward(self.from_tensors, grad)
         if self.from_tensors:
